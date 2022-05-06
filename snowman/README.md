@@ -13,5 +13,5 @@ g++ *.cpp -lGL -lGLU -lglut -o teste
 Run the code
 
 ```
-.\teste
+./teste
 ```
