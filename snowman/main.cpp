@@ -45,21 +45,8 @@ void reshape(int w, int h){
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
-
-void draw(){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
-    gluLookAt(0,-80,350, 0,0,0,0,1,0);
-
-    float cubeSize = 50;
-
-    glRotatef(X, 1,0,0);
-    glRotatef(Y, 0,1,0);
-
-    //SglPushMatrix();
-
-    // HEAD
+void drawSnowman(){
+      // HEAD
     glPushMatrix();
       glColor3f(1.0f, 1.0f, 1.0f);
       glTranslatef(0, -15, 0);
@@ -143,6 +130,23 @@ void draw(){
       gluSphere(gluNewQuadric(), 30, 25, 25);
 
     glPopMatrix();    
+
+}
+void draw(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+
+    gluLookAt(0,-80,350, 0,0,0,0,1,0);
+
+    float cubeSize = 50;
+
+    glRotatef(X, 1,0,0);
+    glRotatef(Y, 0,1,0);
+
+    //SglPushMatrix();
+
+    drawSnowman();
+
 
     glutSwapBuffers();
 }
