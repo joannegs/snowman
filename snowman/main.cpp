@@ -46,7 +46,8 @@ void reshape(int w, int h){
   glLoadIdentity();
 }
 void drawSnowman(){
-      // HEAD
+    // HEAD
+    // has eyes and nose inside the head 
     glPushMatrix();
       glColor3f(1.0f, 1.0f, 1.0f);
       glTranslatef(0, -15, 0);
@@ -54,69 +55,74 @@ void drawSnowman(){
       gluSphere(gluNewQuadric(), 15, 25, 25);
 
       //EYES
-      glColor3f(0.5f, 0.5f, 0.5f);
-      glPushMatrix();
-        glTranslatef(8, 4, 12);
-        glRotatef(0, 1.0, 0.0, 0.0);
-        gluSphere(gluNewQuadric(), 3, 25, 25);
+      glColor3f(0.5f, 0.5f, 0.5f); // set eye color
+      glPushMatrix(); //right eye
+        glTranslatef(8, 4, 12); // floatX, floatY, floatZ
+        //glRotatef(0, 1.0, 0.0, 0.0);
+        gluSphere(gluNewQuadric(), 3, 25, 25); //Specifies the quadrics object, radius, subdivisions around the z axis, subdivisions along the z axis
       glPopMatrix();
 
-      glPushMatrix();
+      glPushMatrix(); //left eye
         glTranslatef(-8, 4, 12);
-        glRotatef(0, 1.0, 0.0, 0.0);
+        //glRotatef(0, 1.0, 0.0, 0.0);
         gluSphere(gluNewQuadric(), 3, 25, 25);
       glPopMatrix();   
       //NOSE
       glColor3f(1.0f, 0.5f, 0.0f);
       glPushMatrix();
         glTranslatef(0, 0, 13);
-        glRotatef(0, 1.0, 0.0, 0.0);
-        glutSolidCone(3, 15, 100, 25);
+        //glRotatef(0, 1.0, 0.0, 0.0);
+        glutSolidCone(3, 15, 100, 25); // radius of the base, height, ubdivisions around the Z axis, subdivisions along the Z axis
       glPopMatrix();
-
-      //SCARF
-      /*glColor3f(1.0f, 0.0f, 0.0f);
-      glPushMatrix();
-        glRotatef(110, 10.0, 0.0, 30.0);
-        glutSolidTorus(10, 10, 20, 50);
-      glPopMatrix();*/
-
+    
     glPopMatrix();
 
-    glColor3f(1.0f, 1.0f, 1.0f);
+    //SCARF
+    // a red scarf
+    // glColor3f(1.0f, 0.0f, 0.0f);
+    // glPushMatrix();
+    //   glTranslatef(0, -28, 0);
+    //   glRotatef(90, 1.0, 0.0, 0.0);
+    //   glutSolidTorus(6, 10, 20, 50);
+    // glPopMatrix();
+
     // BODY
+    // has the buttons and arms inside
+    glColor3f(1.0f, 1.0f, 1.0f);
     glPushMatrix();
       glTranslatef(0, -48, 0);
       gluSphere(gluNewQuadric(), 25, 25, 25);
 
       //BUTTON
+      // three black buttons
       glColor3f(0.0f, 0.0f, 0.0f);
       glPushMatrix();
         glPushMatrix();
         glTranslatef(0, 10, 23);
-        glRotatef(0, 1.0, 0.0, 0.0);
+        //glRotatef(0, 1.0, 0.0, 0.0);
         gluSphere(gluNewQuadric(), 2, 25, 25);
       glPopMatrix();
 
       glPushMatrix();
         glPushMatrix();
         glTranslatef(0, 0, 25);
-        glRotatef(0, 1.0, 0.0, 0.0);
+        //glRotatef(0, 1.0, 0.0, 0.0);
         gluSphere(gluNewQuadric(), 2, 25, 25);
       glPopMatrix();
 
       glPushMatrix();
         glPushMatrix();
         glTranslatef(0, -10, 23);
-        glRotatef(0, 1.0, 0.0, 0.0);
+        //glRotatef(0, 1.0, 0.0, 0.0);
         gluSphere(gluNewQuadric(), 2, 25, 25);
       glPopMatrix();
+
       // ARMS
       glColor3f(0.2f, 0.0f, 0.0f);
       glPushMatrix();
         glTranslatef(20, 0, 0);
-        glRotatef(75, -3.0, 10.0, 0.0);
-        gluCylinder(gluNewQuadric(), 2, 2, 30, 20, 20);
+        glRotatef(75, -3.0, 10.0, 0.0); // angle, floatX, floatY, floatZ
+        gluCylinder(gluNewQuadric(), 2, 2, 30, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
       glPopMatrix();
 
       glPushMatrix();
@@ -124,6 +130,7 @@ void drawSnowman(){
         glRotatef(90, 3.0, 10.0, 0.0);
         gluCylinder(gluNewQuadric(), 2, 2, 30, 20, 20);
       glPopMatrix();
+
       // LEGS
       glColor3f(1.0f, 1.0f, 1.0f);
       glTranslatef(0, -45, 0);
