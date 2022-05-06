@@ -7,11 +7,11 @@ sudo apt install freeglut3-dev
 Compile the code
 
 ```
-g++ *.cpp -lGL -lGLU -lglut -o test
+g++ *.cpp -lGL -lGLU -lglut -o teste
 ```
 
 Run the code
 
 ```
-.\test
+.\teste
 ```
