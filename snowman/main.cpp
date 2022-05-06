@@ -66,7 +66,8 @@ void drawSnowman(){
         glTranslatef(-8, 4, 12);
         //glRotatef(0, 1.0, 0.0, 0.0);
         gluSphere(gluNewQuadric(), 3, 25, 25);
-      glPopMatrix();   
+      glPopMatrix();  
+       
       //NOSE
       glColor3f(1.0f, 0.5f, 0.0f);
       glPushMatrix();
@@ -85,6 +86,20 @@ void drawSnowman(){
     //   glRotatef(90, 1.0, 0.0, 0.0);
     //   glutSolidTorus(6, 10, 20, 50);
     // glPopMatrix();
+
+    // HAT
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glPushMatrix(); // base of hat
+      //glTranslatef(0, 0, 0);
+      glRotatef(90, 1.0, 0.0, 0.0);
+      glutSolidTorus(5, 13, 20, 20); 
+    glPopMatrix();
+
+    glPushMatrix(); // hat body
+        glTranslatef(0, 3, 0);
+        glRotatef(180, 0.0, 10.0, 10.0); // angle, floatX, floatY, floatZ
+        gluCylinder(gluNewQuadric(), 10, 10, 20, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
+    glPopMatrix();
 
     // BODY
     // has the buttons and arms inside
@@ -139,6 +154,7 @@ void drawSnowman(){
     glPopMatrix();    
 
 }
+
 void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -170,6 +186,7 @@ void specialKeys(int key, int x, int y){
     //  Request display update
     glutPostRedisplay();
 }
+
 int main(int argc, char **argv){
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);
