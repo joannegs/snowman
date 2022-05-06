@@ -138,8 +138,6 @@ void draw(){
 
     gluLookAt(0,-80,350, 0,0,0,0,1,0);
 
-    float cubeSize = 50;
-
     glRotatef(X, 1,0,0);
     glRotatef(Y, 0,1,0);
 
