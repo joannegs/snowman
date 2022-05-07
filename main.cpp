@@ -1,28 +1,34 @@
 #include <GL/glut.h>
 
-using namespace std;
+int X, Y;
+GLfloat ambient_light[4]={0.2,0.2,0.2,1.0};
+GLfloat diffuse_light[4]={0.7,0.7,0.7,1.0};		// color
+GLfloat specular_light[4]={1.0, 1.0, 1.0, 1.0};	// brightness
+GLfloat light_position[4]={0.0, 50.0, 50.0, 1.0};
 
-GLint rotateX, rotateY;
-GLfloat angle, aspect, cubeSize, gap;
-float z1,z2,z3;
 void init(){
-  cubeSize = 30;
-  rotateX = 0;
-  rotateY = 0;
-  z1 = 0;
-  z2 = 0;
-  z3 = 0;
-  angle = 45;
-  gap = 1;
-
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glClearColor(0, 0, 0, 0);
+
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_light);
+
+  // define light parameters
+  glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light); 
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light );
+  glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light );
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position );
+
+  // enable changing material color
+  glEnable(GL_COLOR_MATERIAL);
+  // enable lighting
+  glEnable(GL_LIGHTING);  
+  glEnable(GL_LIGHT0);
+
   glEnable(GL_DEPTH_TEST);
 }
 
-void reshape(int w, int h)
-{
-  aspect = (float)w / (float)h;
+void reshape(int w, int h){
+  float aspect = (float)w / (float)h;
 
   glViewport(0, 0, w, h);
   glMatrixMode(GL_PROJECTION);
@@ -33,155 +39,155 @@ void reshape(int w, int h)
   glLoadIdentity();
 
   // specify projection perspective
-  gluPerspective(angle,aspect,0.4,500);
+  gluPerspective(45.0,aspect,0.4,500);
 
   // init model coordinate system
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
+void drawSnowman(){
+    // HEAD
+    // has eyes and nose inside the head 
+    glPushMatrix();
+      glColor3f(1.0f, 1.0f, 1.0f);
+      glTranslatef(0, -15, 0);
+      //glScalef(1.0f,1.0f,1.0f);
+      gluSphere(gluNewQuadric(), 15, 25, 25);
 
-void rotateZ(int i){
-		if(i == 0){
-			glRotatef(z1,0,0,1);
-    }
-		else if(i == 1) {
-			glRotatef(z2,0,0,1);
-    }
-		else if(i == 2) {
-			 glRotatef(z3,0,0,1);
-		}
-		
-		
-	}
+      //EYES
+      glColor3f(0.5f, 0.5f, 0.5f); // set eye color
+      glPushMatrix(); //right eye
+        glTranslatef(8, 4, 12); // floatX, floatY, floatZ
+        //glRotatef(0, 1.0, 0.0, 0.0);
+        gluSphere(gluNewQuadric(), 3, 25, 25); //Specifies the quadrics object, radius, subdivisions around the z axis, subdivisions along the z axis
+      glPopMatrix();
 
-void drawCube(int x, int y, int z){
-  glPushMatrix();
+      glPushMatrix(); //left eye
+        glTranslatef(-8, 4, 12);
+        //glRotatef(0, 1.0, 0.0, 0.0);
+        gluSphere(gluNewQuadric(), 3, 25, 25);
+      glPopMatrix();  
+       
+      //NOSE
+      glColor3f(1.0f, 0.5f, 0.0f);
+      glPushMatrix();
+        glTranslatef(0, 0, 13);
+        //glRotatef(0, 1.0, 0.0, 0.0);
+        glutSolidCone(3, 15, 100, 25); // radius of the base, height, ubdivisions around the Z axis, subdivisions along the Z axis
+      glPopMatrix();
+    
+    glPopMatrix();
 
-  // translate to final position
-  glTranslatef((x - 1) * cubeSize + x * gap, (y - 1) * cubeSize + y * gap, (z - 1) * cubeSize + z * gap);
+    //SCARF
+    // a red scarf
+    // glColor3f(1.0f, 0.0f, 0.0f);
+    // glPushMatrix();
+    //   glTranslatef(0, -28, 0);
+    //   glRotatef(90, 1.0, 0.0, 0.0);
+    //   glutSolidTorus(6, 10, 20, 50);
+    // glPopMatrix();
 
-  glColor3f(1.0f, 0.0f, 0.0f);
-  glBegin(GL_QUADS);  // front
-    glNormal3f(0.0, 0.0, 1.0);  // face normal
-    glVertex3f(cubeSize/2, cubeSize/2, cubeSize/2);
-    glVertex3f(-cubeSize/2, cubeSize/2, cubeSize/2);
-    glVertex3f(-cubeSize/2, -cubeSize/2, cubeSize/2);
-    glVertex3f(cubeSize/2, -cubeSize/2, cubeSize/2);
-  glEnd();
+    // HAT
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glPushMatrix(); // base of hat
+      //glTranslatef(0, 0, 0);
+      glRotatef(90, 1.0, 0.0, 0.0);
+      glutSolidTorus(5, 13, 20, 20); 
+    glPopMatrix();
 
-  glColor3f(1.0f, 0.5f, 0.0f);
-  glBegin(GL_QUADS);  // back
-    glNormal3f(0.0, 0.0, -1.0);  // face normal
-    glVertex3f(cubeSize/2, cubeSize/2, -cubeSize/2);
-    glVertex3f(cubeSize/2, -cubeSize/2, -cubeSize/2);
-    glVertex3f(-cubeSize/2, -cubeSize/2, -cubeSize/2);
-    glVertex3f(-cubeSize/2, cubeSize/2, -cubeSize/2);
-  glEnd();
+    glPushMatrix(); // hat body
+        glTranslatef(0, 3, 0);
+        glRotatef(180, 0.0, 10.0, 10.0); // angle, floatX, floatY, floatZ
+        gluCylinder(gluNewQuadric(), 10, 10, 20, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
+    glPopMatrix();
 
-  glColor3f(0.0f, 0.0f, 1.0f);
-  glBegin(GL_QUADS);  // left
-    glNormal3f(-1.0, 0.0, 0.0);  // face normal
-    glVertex3f(-cubeSize/2, cubeSize/2, cubeSize/2);
-    glVertex3f(-cubeSize/2, cubeSize/2, -cubeSize/2);
-    glVertex3f(-cubeSize/2, -cubeSize/2, -cubeSize/2);
-    glVertex3f(-cubeSize/2, -cubeSize/2, cubeSize/2);
-  glEnd();
-  
-  glColor3f(0.0f, 1.0f, 0.0f);
-  glBegin(GL_QUADS);  // right
-    glNormal3f(1.0, 0.0, 0.0);  // face normal
-    glVertex3f(cubeSize/2, cubeSize/2, cubeSize/2);
-    glVertex3f(cubeSize/2, -cubeSize/2, cubeSize/2);
-    glVertex3f(cubeSize/2, -cubeSize/2, -cubeSize/2);
-    glVertex3f(cubeSize/2, cubeSize/2, -cubeSize/2);
-  glEnd();
+    // BODY
+    // has the buttons and arms inside
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glPushMatrix();
+      glTranslatef(0, -48, 0);
+      gluSphere(gluNewQuadric(), 25, 25, 25);
 
-  glColor3f(1.0f, 1.0f, 1.0f);
-  glBegin(GL_QUADS);  // top
-    glNormal3f(0.0, 1.0, 0.0);  // face normal
-    glVertex3f(-cubeSize/2, cubeSize/2, -cubeSize/2);
-    glVertex3f(-cubeSize/2, cubeSize/2, cubeSize/2);
-    glVertex3f(cubeSize/2, cubeSize/2, cubeSize/2);
-    glVertex3f(cubeSize/2, cubeSize/2, -cubeSize/2);
-  glEnd();
+      //BUTTON
+      // three black buttons
+      glColor3f(0.0f, 0.0f, 0.0f);
+      glPushMatrix();
+        glPushMatrix();
+        glTranslatef(0, 10, 23);
+        //glRotatef(0, 1.0, 0.0, 0.0);
+        gluSphere(gluNewQuadric(), 2, 25, 25);
+      glPopMatrix();
 
-  glColor3f(1.0f, 1.0f, 0.0f);
-  glBegin(GL_QUADS);  // bottom
-    glNormal3f(0.0, -1.0, 0.0);  // face normal
-    glVertex3f(-cubeSize/2, -cubeSize/2, -cubeSize/2);
-    glVertex3f(cubeSize/2, -cubeSize/2, -cubeSize/2);
-    glVertex3f(cubeSize/2, -cubeSize/2, cubeSize/2);
-    glVertex3f(-cubeSize/2, -cubeSize/2, cubeSize/2);
-  glEnd();
+      glPushMatrix();
+        glPushMatrix();
+        glTranslatef(0, 0, 25);
+        //glRotatef(0, 1.0, 0.0, 0.0);
+        gluSphere(gluNewQuadric(), 2, 25, 25);
+      glPopMatrix();
 
-  glPopMatrix();
+      glPushMatrix();
+        glPushMatrix();
+        glTranslatef(0, -10, 23);
+        //glRotatef(0, 1.0, 0.0, 0.0);
+        gluSphere(gluNewQuadric(), 2, 25, 25);
+      glPopMatrix();
+
+      // ARMS
+      glColor3f(0.2f, 0.0f, 0.0f);
+      glPushMatrix();
+        glTranslatef(20, 0, 0);
+        glRotatef(75, -3.0, 10.0, 0.0); // angle, floatX, floatY, floatZ
+        gluCylinder(gluNewQuadric(), 2, 2, 30, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
+      glPopMatrix();
+
+      glPushMatrix();
+        glTranslatef(-50, 10, 0);
+        glRotatef(90, 3.0, 10.0, 0.0);
+        gluCylinder(gluNewQuadric(), 2, 2, 30, 20, 20);
+      glPopMatrix();
+
+      // LEGS
+      glColor3f(1.0f, 1.0f, 1.0f);
+      glTranslatef(0, -45, 0);
+      gluSphere(gluNewQuadric(), 30, 25, 25);
+
+    glPopMatrix();    
+
 }
 
 void draw(){
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
 
-  // reset transformations
-  glLoadIdentity();
+    gluLookAt(0,-80,350, 0,0,0,0,1,0);
 
+    glRotatef(X, 1,0,0);
+    glRotatef(Y, 0,1,0);
 
-  // camera;
-  gluLookAt(0,80,200, 0,0,0, 0,1,0);
+    //SglPushMatrix();
 
-  // apply visualization transformations
-  glRotatef(rotateX, 1.0, 0.0, 0.0); 
-  glRotatef(rotateY, 0.0, 1.0, 0.0); 
-
-  for (int i = 0; i < 3; ++i){ // x
-    
-    for (int j = 0; j < 3; ++j){// y
-      for (int k = 0; k < 3; ++k){ //z
-        
-        
-        drawCube(i, j, k);
-      }
-    }
-  }
+    drawSnowman();
 
 
-  glutSwapBuffers();
+    glutSwapBuffers();
 }
 
-void specialKeys(int key, int x, int y)
-{
-
-  //  Right arrow - increase rotation by 5 degree
-  if (key == GLUT_KEY_RIGHT)
-    rotateY += 5;
+void specialKeys(int key, int x, int y){
+    if (key == GLUT_KEY_RIGHT)
+        Y += 5;
   //  Left arrow - decrease rotation by 5 degree
-  else if (key == GLUT_KEY_LEFT){
-    rotateY -= 5;
-  }
-  else if (key == GLUT_KEY_UP)
-    rotateX += 5;
-  else if (key == GLUT_KEY_DOWN)
-    rotateX -= 5;
-  //  Request display update
-  glutPostRedisplay();
+    else if (key == GLUT_KEY_LEFT){
+        Y -= 5;
+    }
+    else if (key == GLUT_KEY_UP)
+        X += 5;
+    else if (key == GLUT_KEY_DOWN)
+        X -= 5;
+    //  Request display update
+    glutPostRedisplay();
 }
 
-void keyboard_func(unsigned char key, int x, int y)
-{
-
-  switch(key) {
-
-    case 'q':
-    case 'Q':
-      z1 += 5;
-    break;
-
-    default:
-      break;
-
-  }
-  glutPostRedisplay();
-}
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);
   glutInitWindowPosition(200, 100);
@@ -189,10 +195,9 @@ int main(int argc, char **argv)
   glutCreateWindow("Hello World");
 
   init();
+
   glutDisplayFunc(draw);
   glutReshapeFunc(reshape);
   glutSpecialFunc(specialKeys);
-  glutKeyboardFunc(keyboard_func);
-
   glutMainLoop();
 }
