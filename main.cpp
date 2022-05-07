@@ -33,18 +33,35 @@ void reshape(int w, int h){
   glViewport(0, 0, w, h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(45.0, aspect, 0.1, 500.0);
+  gluPerspective(45.0, aspect, 0.1, 1000.0);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
   // specify projection perspective
-  gluPerspective(45.0,aspect,0.4,500);
+  gluPerspective(45.0,aspect,0.4,1000);
 
   // init model coordinate system
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
+
+void drawGround(){
+  glPushMatrix();
+    glRotatef(90,1,0,0);
+    glTranslatef(0,0,23);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+      //glNormal3f(1.0, 0.0, 0.0);
+      glVertex3f(100, 100, 100);
+      glVertex3f(-100, 100, 100);
+      glVertex3f(-100, -100, 100);
+      glVertex3f(100, -100, 100);
+    glEnd();
+  glPopMatrix();
+ // glRotatef(-90,1,0,0);
+}
+
 void drawSnowman(){
     // HEAD
     // has eyes and nose inside the head 
@@ -166,6 +183,7 @@ void draw(){
 
     //SglPushMatrix();
 
+    drawGround();
     drawSnowman();
 
 
