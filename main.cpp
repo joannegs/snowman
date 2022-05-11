@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+#include <math.h>
 
 int X, Y;
 GLfloat ambient_light[4]={0.2,0.2,0.2,1.0};
@@ -97,12 +98,13 @@ void drawSnowman(){
 
     //SCARF
     // a red scarf
-    // glColor3f(1.0f, 0.0f, 0.0f);
-    // glPushMatrix();
-    //   glTranslatef(0, -28, 0);
-    //   glRotatef(90, 1.0, 0.0, 0.0);
-    //   glutSolidTorus(6, 10, 20, 50);
-    // glPopMatrix();
+/*     glColor3f(1.0f, 0.0f, 0.0f);
+    glPushMatrix();
+      glTranslatef(0, -28, 0);
+       glRotatef(90, 1.0, 0.0, 0.0);
+       glutSolidTorus(6, 10, 20, 50);
+       glPopMatrix(); */
+
 
     // HAT
     glColor3f(0.0f, 1.0f, 0.0f);
@@ -116,6 +118,13 @@ void drawSnowman(){
         glTranslatef(0, 3, 0);
         glRotatef(180, 0.0, 10.0, 10.0); // angle, floatX, floatY, floatZ
         gluCylinder(gluNewQuadric(), 10, 10, 20, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
+      glPopMatrix();
+
+  
+  glPushMatrix(); 
+        glTranslatef(0, 23, 0);
+        glRotatef(180, 0.0, 10.0, 10.0); 
+        gluDisk(gluNewQuadric(), 0, 10, 90, 1); 
     glPopMatrix();
 
     // BODY
