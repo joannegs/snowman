@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+#include <math.h>
 
 int X, Y;
 GLfloat ambient_light[4]={0.2,0.2,0.2,1.0};
@@ -53,13 +54,47 @@ void drawGround(){
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_QUADS);
       //glNormal3f(1.0, 0.0, 0.0);
-      glVertex3f(100, 100, 100);
-      glVertex3f(-100, 100, 100);
-      glVertex3f(-100, -100, 100);
-      glVertex3f(100, -100, 100);
+      glVertex3f(1000, 1000, 100);
+      glVertex3f(-1000, 1000, 100);
+      glVertex3f(-1000, -1000, 100);
+      glVertex3f(1000, -1000, 100);
     glEnd();
   glPopMatrix();
  // glRotatef(-90,1,0,0);
+}
+
+void drawTree(int x, int z){
+  // tronco da árvore
+    glPushMatrix();
+      glTranslatef(x, -120, -z);
+      glColor3f(1.0f, 0.4f, 0.0f);
+      glRotatef(270, 1, 0, 0);
+      gluCylinder(gluNewQuadric(), 5, 0, 120, 20, 20);
+    glPopMatrix(); 
+
+    // cone 1 da arvore 
+    glColor3f(0.0f, 1.0f, 0.3f);
+    glPushMatrix();
+      glTranslatef(x, -40, -z);
+      glRotatef(270, 1, 0, 0);
+      gluCylinder(gluNewQuadric(), 25, 0, 40, 20, 20);
+    glPopMatrix(); 
+
+    // cone 2 da arvore 
+    glColor3f(0.0f, 1.0f, 0.5f);
+    glPushMatrix();
+      glTranslatef(x, -65, -z);
+      glRotatef(270, 1, 0, 0);
+      gluCylinder(gluNewQuadric(), 40, 0, 40, 20, 20);
+    glPopMatrix(); 
+
+    // cone 3 da arvore 
+    glColor3f(0.0f, 1.0f, 0.7f);
+    glPushMatrix();
+      glTranslatef(x, -90, -z);
+      glRotatef(270, 1, 0, 0);
+      gluCylinder(gluNewQuadric(), 55, 0, 40, 20, 20);
+    glPopMatrix(); 
 }
 
 void drawSnowman(){
@@ -97,12 +132,13 @@ void drawSnowman(){
 
     //SCARF
     // a red scarf
-    // glColor3f(1.0f, 0.0f, 0.0f);
-    // glPushMatrix();
-    //   glTranslatef(0, -28, 0);
-    //   glRotatef(90, 1.0, 0.0, 0.0);
-    //   glutSolidTorus(6, 10, 20, 50);
-    // glPopMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glPushMatrix();
+      glTranslatef(0, -28, 0);
+       glRotatef(90, 1.0, 0.0, 0.0);
+       glutSolidTorus(6, 10, 20, 50);
+    glPopMatrix();
+    
 
     // HAT
     glColor3f(0.0f, 1.0f, 0.0f);
@@ -116,7 +152,14 @@ void drawSnowman(){
         glTranslatef(0, 3, 0);
         glRotatef(180, 0.0, 10.0, 10.0); // angle, floatX, floatY, floatZ
         gluCylinder(gluNewQuadric(), 10, 10, 20, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
-    glPopMatrix();
+      glPopMatrix();
+
+  // tampa do chapel 
+  glPushMatrix(); 
+        glTranslatef(0, 23, 0);
+        glRotatef(180, 0.0, 10.0, 10.0); 
+        gluDisk(gluNewQuadric(), 0, 10, 90, 1); 
+    glPopMatrix(); 
 
     // BODY
     // has the buttons and arms inside
@@ -168,7 +211,7 @@ void drawSnowman(){
       glTranslatef(0, -45, 0);
       gluSphere(gluNewQuadric(), 30, 25, 25);
 
-    glPopMatrix();    
+    glPopMatrix();   
 
 }
 
@@ -184,6 +227,8 @@ void draw(){
     //SglPushMatrix();
 
     drawGround();
+    drawTree(150, 150);
+    drawTree(-150, 100);
     drawSnowman();
 
 
