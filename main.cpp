@@ -3,9 +3,9 @@
 
 int X, Y;
 GLfloat ambient_light[4]={0.2,0.2,0.2,1.0};
-GLfloat diffuse_light[4]={0.7,0.7,0.7,1.0};		// color
-GLfloat specular_light[4]={1.0, 1.0, 1.0, 1.0};	// brightness
-GLfloat light_position[4]={0.0, 50.0, 50.0, 1.0};
+GLfloat diffuse_light[4]={1.0,1.0,1.0,1.0};		// color
+GLfloat specular_light[4]={0.0, 1.0, 1.0, 1.0};	// brightness
+GLfloat light_position[4]={0.0, 100.0, 50.0, 1.0};
 
 void init(){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -20,6 +20,7 @@ void init(){
   glLightfv(GL_LIGHT0, GL_POSITION, light_position );
 
   // enable changing material color
+  glEnable ( GL_TEXTURE_2D );
   glEnable(GL_COLOR_MATERIAL);
   // enable lighting
   glEnable(GL_LIGHTING);  
@@ -48,6 +49,8 @@ void reshape(int w, int h){
 }
 
 void drawGround(){
+
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glPushMatrix();
     glRotatef(90,1,0,0);
     glTranslatef(0,0,23);
@@ -98,7 +101,8 @@ void drawTree(int x, int z){
 }
 
 void drawSnowman(){
-    // HEAD
+
+   // HEAD
     // has eyes and nose inside the head 
     glPushMatrix();
       glColor3f(1.0f, 1.0f, 1.0f);
@@ -138,10 +142,16 @@ void drawSnowman(){
        glRotatef(90, 1.0, 0.0, 0.0);
        glutSolidTorus(6, 10, 20, 50);
     glPopMatrix();
+    // base scarf
+    glPushMatrix();
+      glTranslatef(10, -42, 6);
+       glRotatef(90, 0.0, 1.0, 0.0);
+       glutSolidTorus(6, 10, 20, 50);
+    glPopMatrix();
     
 
     // HAT
-    glColor3f(0.0f, 1.0f, 0.0f);
+    glColor3f(0.2f, 0.2f, 0.2f);
     glPushMatrix(); // base of hat
       //glTranslatef(0, 0, 0);
       glRotatef(90, 1.0, 0.0, 0.0);
@@ -154,7 +164,15 @@ void drawSnowman(){
         gluCylinder(gluNewQuadric(), 10, 10, 20, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
       glPopMatrix();
 
-  // tampa do chapel 
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glPushMatrix(); // red
+        glTranslatef(0, 3, 0);
+        glRotatef(180, 0.0, 10.0, 10.0); // angle, floatX, floatY, floatZ
+        gluCylinder(gluNewQuadric(), 10.5, 10, 5, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
+    glPopMatrix();
+
+  glColor3f(0.2f, 0.2f, 0.2f);
+  // tampa do chapeu
   glPushMatrix(); 
         glTranslatef(0, 23, 0);
         glRotatef(180, 0.0, 10.0, 10.0); 
@@ -194,6 +212,7 @@ void drawSnowman(){
 
       // ARMS
       glColor3f(0.2f, 0.0f, 0.0f);
+      
       glPushMatrix();
         glTranslatef(20, 0, 0);
         glRotatef(75, -3.0, 10.0, 0.0); // angle, floatX, floatY, floatZ
@@ -255,7 +274,7 @@ int main(int argc, char **argv){
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);
   glutInitWindowPosition(200, 100);
   glutInitWindowSize(1080, 720);
-  glutCreateWindow("Hello World");
+  glutCreateWindow("Snowman");
 
   init();
 
