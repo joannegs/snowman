@@ -89,7 +89,7 @@ void drawGround(){
 void drawTree(int x, int z){
   // tronco da árvore
     glPushMatrix();
-      glTranslatef(x, -120, -z);
+      glTranslatef(x, -124, -z);
       glColor3f(0.3f, 0.2f, 0.0f);
       glRotatef(270, 1, 0, 0);
       gluCylinder(gluNewQuadric(), 5, 0, 120, 20, 20);
