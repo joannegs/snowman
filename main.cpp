@@ -1,9 +1,5 @@
-#define STB_IMAGE_IMPLEMENTATION
-#define GL_GLEXT_PROTOTYPES
 #include <GL/glut.h>
-#include <math.h> 
-#include "vendor/stb_image/stb_image.h"
-
+#include <math.h>
 
 int X, Y;
 GLfloat eyeX, eyeY, eyeZ;
@@ -61,58 +57,33 @@ void reshape(int w, int h){
   glLoadIdentity();
 }
 
-void render_texture(const char* file_name) {
-  unsigned int texture;
-  glGenTextures(1, &texture);  
-  glBindTexture(GL_TEXTURE_2D, texture);  
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-  int width = 800;
-  int height = 523;
-  int nrChannels = 3;
-  unsigned char *data = stbi_load(file_name, &width, &height, &nrChannels, 0); 
-
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-  glGenerateMipmap(GL_TEXTURE_2D);
-
-  stbi_image_free(data);
-}
-
 void drawSky(){
+
   glPushMatrix();
     glColor3f(0.0f, 0.0f, 2.0f);
-    GLUquadric *qobj = gluNewQuadric();
-    // gluQuadricTexture(qobj, GL_TRUE);
-    gluSphere(qobj, 900, 25, 25);
-    gluDeleteQuadric(qobj);
+    //glTranslatef(0, -15, 0);
+    //glScalef(1.0f,1.0f,1.0f);
+    gluSphere(gluNewQuadric(), 980, 25, 25);
   glPopMatrix(); 
 
 }
 
 void drawGround(){
+
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glPushMatrix();
     glRotatef(90,1,0,0);
     glTranslatef(0,0,23);
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_QUADS);
-      // textura
-      glTexCoord2f(0.0f, 0.0f);
       //glNormal3f(1.0, 0.0, 0.0);
       glVertex3f(1000, 1000, 100);
-      glTexCoord2f(1.0f, 0.0f);
       glVertex3f(-1000, 1000, 100);
-      glTexCoord2f(0.0f, 1.0f);
       glVertex3f(-1000, -1000, 100);
-      glTexCoord2f(1.0f, 1.0f);
       glVertex3f(1000, -1000, 100);
     glEnd();
   glPopMatrix();
  // glRotatef(-90,1,0,0);
-
 }
 
 void drawTree(int x, int z){
@@ -129,9 +100,7 @@ void drawTree(int x, int z){
     glPushMatrix();
       glTranslatef(x, -40, -z);
       glRotatef(270, 1, 0, 0);
-      GLUquadric *qobj1 = gluNewQuadric();
-      gluQuadricTexture(qobj1, GL_TRUE);
-      gluCylinder(qobj1, 25, 0, 40, 20, 20);
+      gluCylinder(gluNewQuadric(), 25, 0, 40, 20, 20);
     glPopMatrix(); 
 
     // cone 2 da arvore 
@@ -139,9 +108,7 @@ void drawTree(int x, int z){
     glPushMatrix();
       glTranslatef(x, -65, -z);
       glRotatef(270, 1, 0, 0);
-      GLUquadric *qobj2 = gluNewQuadric();
-      gluQuadricTexture(qobj2, GL_TRUE);
-      gluCylinder(qobj2, 40, 0, 40, 20, 20);
+      gluCylinder(gluNewQuadric(), 40, 0, 40, 20, 20);
     glPopMatrix(); 
 
     // cone 3 da arvore 
@@ -149,9 +116,7 @@ void drawTree(int x, int z){
     glPushMatrix();
       glTranslatef(x, -90, -z);
       glRotatef(270, 1, 0, 0);
-      GLUquadric *qobj3 = gluNewQuadric();
-      gluQuadricTexture(qobj3, GL_TRUE);
-      gluCylinder(qobj3, 55, 0, 40, 20, 20);
+      gluCylinder(gluNewQuadric(), 55, 0, 40, 20, 20);
     glPopMatrix(); 
 }
 
@@ -303,17 +268,12 @@ void draw(){
 
     //SglPushMatrix();
 
-    
-    // ACHAR UMA NOVA TEXTURA
-    
-    render_texture("snow_texture.jpg");
+    drawSky();
     drawGround();
-    drawSnowman();
-    render_texture("leaves_texture.jpg");
     drawTree(150, 150);
     drawTree(-150, 100);
-    
-    drawSky();
+    drawSnowman();
+
     glutSwapBuffers();
 }
 
