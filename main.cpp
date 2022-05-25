@@ -1,11 +1,37 @@
+#define STB_IMAGE_IMPLEMENTATION
+#define GL_GLEXT_PROTOTYPES
 #include <GL/glut.h>
-#include <math.h>
+#include <math.h> 
+#include "vendor/stb_image/stb_image.h"
+#include "snow_animation.cpp"
+#include <string>
 
 int X, Y;
 GLfloat ambient_light[4]={0.2,0.2,0.2,1.0};
-GLfloat diffuse_light[4]={1.0,1.0,1.0,1.0};		// color
-GLfloat specular_light[4]={0.0, 1.0, 1.0, 1.0};	// brightness
-GLfloat light_position[4]={0.0, 100.0, 50.0, 1.0};
+GLfloat diffuse_light[4]={0.7,0.7,0.7,1.0};		// color
+GLfloat specular_light[4]={1.0, 1.0, 1.0, 1.0};	// brightness
+GLfloat light_position[4]={0.0, 50.0, 50.0, 1.0};
+
+void render_texture(const char* file_name) {
+  unsigned int texture;
+  glGenTextures(1, &texture);  
+  glBindTexture(GL_TEXTURE_2D, texture);  
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  int width = 800;
+  int height = 523;
+  int nrChannels = 3;
+  unsigned char *data = stbi_load(file_name, &width, &height, &nrChannels, 0); 
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+  glGenerateMipmap(GL_TEXTURE_2D);
+
+  stbi_image_free(data);
+}
 
 void init(){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -20,13 +46,16 @@ void init(){
   glLightfv(GL_LIGHT0, GL_POSITION, light_position );
 
   // enable changing material color
-  glEnable ( GL_TEXTURE_2D );
   glEnable(GL_COLOR_MATERIAL);
   // enable lighting
   glEnable(GL_LIGHTING);  
   glEnable(GL_LIGHT0);
 
   glEnable(GL_DEPTH_TEST);
+
+  /* enable texture */ 
+  glEnable(GL_TEXTURE_2D);
+
 }
 
 void reshape(int w, int h){
@@ -48,18 +77,37 @@ void reshape(int w, int h){
   glLoadIdentity();
 }
 
-void drawGround(){
-
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+void drawSky(){
   glPushMatrix();
-    glRotatef(90,1,0,0);
-    glTranslatef(0,0,23);
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glRotatef(180,1,0,0);
+    glTranslatef(0,0,300);
+    glColor3f(0.5f, 0.5f, 1.0f);
     glBegin(GL_QUADS);
       //glNormal3f(1.0, 0.0, 0.0);
       glVertex3f(1000, 1000, 100);
       glVertex3f(-1000, 1000, 100);
       glVertex3f(-1000, -1000, 100);
+      glVertex3f(1000, -1000, 100);
+    glEnd();
+  glPopMatrix();
+ // glRotatef(-90,1,0,0);
+}
+
+void drawGround(){
+  glPushMatrix();
+    glRotatef(90,1,0,0);
+    glTranslatef(0,0,23);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+      // textura
+      glTexCoord2f(0.0f, 0.0f);
+      //glNormal3f(1.0, 0.0, 0.0);
+      glVertex3f(1000, 1000, 100);
+      glTexCoord2f(1.0f, 0.0f);
+      glVertex3f(-1000, 1000, 100);
+      glTexCoord2f(0.0f, 1.0f);
+      glVertex3f(-1000, -1000, 100);
+      glTexCoord2f(1.0f, 1.0f);
       glVertex3f(1000, -1000, 100);
     glEnd();
   glPopMatrix();
@@ -75,7 +123,8 @@ void drawTree(int x, int z){
       gluCylinder(gluNewQuadric(), 5, 0, 120, 20, 20);
     glPopMatrix(); 
 
-    // cone 1 da arvore 
+    // cone 1 da arvore
+    glTexCoord2f(0.0f, 0.0f); 
     glColor3f(0.0f, 1.0f, 0.3f);
     glPushMatrix();
       glTranslatef(x, -40, -z);
@@ -101,8 +150,7 @@ void drawTree(int x, int z){
 }
 
 void drawSnowman(){
-
-   // HEAD
+    // HEAD
     // has eyes and nose inside the head 
     glPushMatrix();
       glColor3f(1.0f, 1.0f, 1.0f);
@@ -142,16 +190,10 @@ void drawSnowman(){
        glRotatef(90, 1.0, 0.0, 0.0);
        glutSolidTorus(6, 10, 20, 50);
     glPopMatrix();
-    // base scarf
-    glPushMatrix();
-      glTranslatef(10, -42, 6);
-       glRotatef(90, 0.0, 1.0, 0.0);
-       glutSolidTorus(6, 10, 20, 50);
-    glPopMatrix();
     
 
     // HAT
-    glColor3f(0.2f, 0.2f, 0.2f);
+    glColor3f(0.0f, 1.0f, 0.0f);
     glPushMatrix(); // base of hat
       //glTranslatef(0, 0, 0);
       glRotatef(90, 1.0, 0.0, 0.0);
@@ -164,15 +206,7 @@ void drawSnowman(){
         gluCylinder(gluNewQuadric(), 10, 10, 20, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
       glPopMatrix();
 
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glPushMatrix(); // red
-        glTranslatef(0, 3, 0);
-        glRotatef(180, 0.0, 10.0, 10.0); // angle, floatX, floatY, floatZ
-        gluCylinder(gluNewQuadric(), 10.5, 10, 5, 20, 20); // quadrics object, base radius, top radius, heigth, slices, stacks
-    glPopMatrix();
-
-  glColor3f(0.2f, 0.2f, 0.2f);
-  // tampa do chapeu
+  // tampa do chapel 
   glPushMatrix(); 
         glTranslatef(0, 23, 0);
         glRotatef(180, 0.0, 10.0, 10.0); 
@@ -212,7 +246,6 @@ void drawSnowman(){
 
       // ARMS
       glColor3f(0.2f, 0.0f, 0.0f);
-      
       glPushMatrix();
         glTranslatef(20, 0, 0);
         glRotatef(75, -3.0, 10.0, 0.0); // angle, floatX, floatY, floatZ
@@ -245,11 +278,12 @@ void draw(){
 
     //SglPushMatrix();
 
+    render_texture("snow_texture.jpg");
     drawGround();
     drawTree(150, 150);
     drawTree(-150, 100);
     drawSnowman();
-
+    drawSnow();
 
     glutSwapBuffers();
 }
@@ -274,12 +308,15 @@ int main(int argc, char **argv){
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);
   glutInitWindowPosition(200, 100);
   glutInitWindowSize(1080, 720);
-  glutCreateWindow("Snowman");
+  glutCreateWindow("Computacao Grafica 2020.1 - Snowman");
 
   init();
+  init_rain();
+  // initParticles();
 
   glutDisplayFunc(draw);
   glutReshapeFunc(reshape);
   glutSpecialFunc(specialKeys);
   glutMainLoop();
+  return 0;
 }
