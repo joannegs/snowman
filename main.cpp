@@ -6,10 +6,15 @@
 
 
 int X, Y;
+GLfloat eyeX, eyeY, eyeZ;
 
 void init(){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glClearColor(0, 0, 0, 0);  
+
+  eyeX = 0;
+  eyeY = -15;
+  eyeZ = 400;
 
   // enable changing material color
   glEnable (GL_TEXTURE_2D);
@@ -113,7 +118,7 @@ void drawGround(){
 void drawTree(int x, int z){
   // tronco da árvore
     glPushMatrix();
-      glTranslatef(x, -120, -z);
+      glTranslatef(x, -124, -z);
       glColor3f(0.3f, 0.2f, 0.0f);
       glRotatef(270, 1, 0, 0);
       gluCylinder(gluNewQuadric(), 5, 0, 120, 20, 20);
@@ -288,7 +293,8 @@ void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    gluLookAt(0,-80,400, 0,0,0,0,1,0);
+    //gluLookAt(0,-80,400, 0,0,0,0,1,0);
+    gluLookAt(eyeX,eyeY,eyeZ,0,-15,0,0,1,0);
 
 
     glRotatef(X, 1,0,0);
@@ -318,13 +324,25 @@ void specialKeys(int key, int x, int y){
     else if (key == GLUT_KEY_LEFT){
         Y -= 5;
     }
-    else if (key == GLUT_KEY_UP)
+    else if (key == GLUT_KEY_UP){
         X += 5;
-    else if (key == GLUT_KEY_DOWN)
+    }
+    else if (key == GLUT_KEY_DOWN){
         X -= 5;
+    }
+    else if(key == GLUT_KEY_F1){ //zoom-out
+      eyeZ += 5;
+    }
+    else if(key == GLUT_KEY_F2){ //zoom-in
+      if(eyeZ > 5){
+        eyeZ -= 5;
+      }
+    }
+
     //  Request display update
     glutPostRedisplay();
 }
+
 
 int main(int argc, char **argv){
   glutInit(&argc, argv);
