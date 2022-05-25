@@ -2,25 +2,13 @@
 #include <math.h>
 
 int X, Y;
-GLfloat ambient_light[4]={0.2,0.2,0.2,1.0};
-GLfloat diffuse_light[4]={1.0,1.0,1.0,1.0};		// color
-GLfloat specular_light[4]={0.0, 1.0, 1.0, 1.0};	// brightness
-GLfloat light_position[4]={0.0, 100.0, 50.0, 1.0};
 
 void init(){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glClearColor(0, 0, 0, 0);
-
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_light);
-
-  // define light parameters
-  glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light); 
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light );
-  glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light );
-  glLightfv(GL_LIGHT0, GL_POSITION, light_position );
+  glClearColor(0, 0, 0, 0);  
 
   // enable changing material color
-  glEnable ( GL_TEXTURE_2D );
+  glEnable (GL_TEXTURE_2D);
   glEnable(GL_COLOR_MATERIAL);
   // enable lighting
   glEnable(GL_LIGHTING);  
@@ -29,23 +17,50 @@ void init(){
   glEnable(GL_DEPTH_TEST);
 }
 
+void set_light(){
+  //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_light);
+  GLfloat ambient_light[]={0.2, 0.2, 0.2, 1.0};
+  GLfloat diffuse_light[]={1.0, 1.0, 1.0, 1.0};
+  GLfloat specular_light[]={0.0, 1.0, 1.0, 1.0};
+  GLfloat light_emission[]={0.0, 0.7, 0.1, 0.0};
+  GLfloat light_position[] = {1.0, 1.0, 1.0, 0.0};
+
+  // define light parameters
+  glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light); 
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light );
+  glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light );
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+  //glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
+}
+
 void reshape(int w, int h){
   float aspect = (float)w / (float)h;
 
   glViewport(0, 0, w, h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(45.0, aspect, 0.1, 1000.0);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
   // specify projection perspective
-  gluPerspective(45.0,aspect,0.4,1000);
+  gluPerspective(45.0,aspect,0.4,5000);
 
   // init model coordinate system
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+}
+
+void drawSky(){
+
+  glPushMatrix();
+    glColor3f(0.0f, 0.0f, 2.0f);
+    //glTranslatef(0, -15, 0);
+    //glScalef(1.0f,1.0f,1.0f);
+    gluSphere(gluNewQuadric(), 900, 25, 25);
+  glPopMatrix(); 
+
 }
 
 void drawGround(){
@@ -70,13 +85,13 @@ void drawTree(int x, int z){
   // tronco da árvore
     glPushMatrix();
       glTranslatef(x, -120, -z);
-      glColor3f(1.0f, 0.4f, 0.0f);
+      glColor3f(0.3f, 0.2f, 0.0f);
       glRotatef(270, 1, 0, 0);
       gluCylinder(gluNewQuadric(), 5, 0, 120, 20, 20);
     glPopMatrix(); 
 
     // cone 1 da arvore 
-    glColor3f(0.0f, 1.0f, 0.3f);
+    glColor3f(0.0f, 1.0f, 0.1f);
     glPushMatrix();
       glTranslatef(x, -40, -z);
       glRotatef(270, 1, 0, 0);
@@ -84,7 +99,7 @@ void drawTree(int x, int z){
     glPopMatrix(); 
 
     // cone 2 da arvore 
-    glColor3f(0.0f, 1.0f, 0.5f);
+    glColor3f(0.0f, 0.7f, 0.0f);
     glPushMatrix();
       glTranslatef(x, -65, -z);
       glRotatef(270, 1, 0, 0);
@@ -92,7 +107,7 @@ void drawTree(int x, int z){
     glPopMatrix(); 
 
     // cone 3 da arvore 
-    glColor3f(0.0f, 1.0f, 0.7f);
+    glColor3f(0.0f, 0.55f, 0.0f);
     glPushMatrix();
       glTranslatef(x, -90, -z);
       glRotatef(270, 1, 0, 0);
@@ -238,18 +253,20 @@ void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    gluLookAt(0,-80,350, 0,0,0,0,1,0);
+    gluLookAt(0,-80,400, 0,0,0,0,1,0);
+
 
     glRotatef(X, 1,0,0);
     glRotatef(Y, 0,1,0);
+    set_light();
 
     //SglPushMatrix();
 
+    drawSky();
     drawGround();
     drawTree(150, 150);
     drawTree(-150, 100);
     drawSnowman();
-
 
     glutSwapBuffers();
 }
