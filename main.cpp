@@ -301,19 +301,12 @@ void draw(){
     glRotatef(Y, 0,1,0);
     set_light();
 
-    //SglPushMatrix();
-
-    
-    // ACHAR UMA NOVA TEXTURA
-    
-    render_texture("snow_texture.jpg");
+    drawSky();
+    render_texture("textures/snow_texture.jpg");
     drawGround();
-    drawSnowman();
-    render_texture("leaves_texture.jpg");
     drawTree(150, 150);
     drawTree(-150, 100);
-    
-    drawSky();
+    drawSnowman();
     glutSwapBuffers();
 }
 
